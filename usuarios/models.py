@@ -45,3 +45,34 @@ class UsuarioRol(models.Model):
 
     def __str__(self):
         return f"Usuario: {self.id_usuario.username} - Rol: {self.id_rol.nombre_rol}"
+
+class Departamento(models.Model):
+    id_departamento = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, unique=True)
+    descripcion = models.CharField(max_length=255, blank=True, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nombre
+
+class Cargo(models.Model):
+    id_cargo = models.AutoField(primary_key=True)
+    id_departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, db_column='id_departamento', related_name='cargos')
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.nombre} - {self.id_departamento.nombre}"
+
+class Empleado(models.Model):
+    id_empleado = models.AutoField(primary_key=True)
+    id_usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, db_column='id_usuario', related_name='empleado')
+    id_cargo = models.ForeignKey(Cargo, on_delete=models.SET_NULL, null=True, db_column='id_cargo', related_name='empleados')
+    fecha_contratacion = models.DateField()
+    salario = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    activo = models.BooleanField(default=True)
+
+    def __str__(self):
+        # Usamos id_usuario e id_cargo porque así llamamos a los campos
+        nombre_cargo = self.id_cargo.nombre if self.id_cargo else 'Sin cargo'
+        return f"Empleado: {self.id_usuario.username} | Cargo: {nombre_cargo}"
