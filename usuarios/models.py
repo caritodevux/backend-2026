@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezone
+from django.contrib.auth.models import User  # Usamos la tabla nativa auth_user
 
 class Persona(models.Model):
     rut = models.CharField(max_length=12, primary_key=True, help_text="Formato: 12345678-9")
@@ -15,13 +15,13 @@ class Persona(models.Model):
 
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
-    nombre_rol = models.CharField(max_length=50, unique=True)
+    nombre_rol = models.CharField(max_length=50, unique=True) # Ej: 'ADMIN', 'VENDEDOR'
     descripcion = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.nombre_rol
 
-class Usuario(models.Model):
+""" class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
     rut = models.OneToOneField(Persona, on_delete=models.CASCADE, db_column='rut')
     username = models.CharField(max_length=50, unique=True)
@@ -45,7 +45,7 @@ class UsuarioRol(models.Model):
 
     def __str__(self):
         return f"Usuario: {self.id_usuario.username} - Rol: {self.id_rol.nombre_rol}"
-
+"""
 class Departamento(models.Model):
     id_departamento = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, unique=True)
@@ -66,9 +66,14 @@ class Cargo(models.Model):
 
 class Empleado(models.Model):
     id_empleado = models.AutoField(primary_key=True)
-    id_usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, db_column='id_usuario', related_name='empleado')
+    # id_usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, db_column='id_usuario', related_name='empleado')
+    # Reemplazamos la tabla manual Usuario por el User nativo de Django
+    # Agregamos null=True, blank=True
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='empleado', null=True, blank=True)
+    # Le agregamos null=True, blank=True para que Django no exija un valor por defecto
+    persona = models.OneToOneField(Persona, on_delete=models.CASCADE, related_name='empleado', null=True, blank=True)
     id_cargo = models.ForeignKey(Cargo, on_delete=models.SET_NULL, null=True, db_column='id_cargo', related_name='empleados')
-    fecha_contratacion = models.DateField()
+    fecha_contratacion = models.DateField(auto_now_add=True)
     salario = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     activo = models.BooleanField(default=True)
 
