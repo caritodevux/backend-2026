@@ -127,7 +127,7 @@ Comprobar que:
 ---
 
 ## Pasos realizados en segunda etapa
-### 0. Modificación del Modelo Entidad Relaciòn para cumplir con "No se debe crear un modelo de usuarios desde cero para la autenticación".
+### 0. Modificación del Modelo Entidad Relación para cumplir con "No se debe crear un modelo de usuarios desde cero para la autenticación".
 - **Tablas idénticas al diagrama**: Persona, Rol, Departamento y Cargo fueron estructuradas exactamente con los mismos campos y tipos de datos que een el diagrama ER.
 - **Tabla USUARIO (Reemplazada)**: El diagrama exige una tabla manual con password_hash y username. Nosotros la eliminamos y la conectamos al User nativo de Django **(auth_user)**, ya que el profesor solicitó usar **django.contrib.auth**.
 - **Relación de PERSONA y el Usuario**: En el diagrama, USUARIO tiene una clave foránea rut que apunta a PERSONA. *Como el User nativo de Django no permite agregar columnas nuevas directamente* (sin crear un modelo de usuario personalizado complejo), en el Paso 1 enlazamos Persona a través de la tabla Empleado. **EMPLEADO** *actúa como el pivote del sistema*, conectando a la cuenta del sistema (AUTH_USER), la persona física (PERSONA), su nivel de permisos (ROL) y su puesto dentro de la empresa (CARGO).
@@ -156,7 +156,7 @@ python manage.py makemigrations usuarios
 python manage.py migrate
 ```
 
-### 3.1 Solucionando error al migrar por resgistros previos
+### 3.1 Solucionando error al migrar por registros previos
 ```
 It is impossible to add a non-nullable field 'persona' to empleado without specifying a default. This is because the database needs something to populate existing rows.
 Please select a fix:
@@ -175,14 +175,23 @@ Intetaremos permitir los valores nulos de manera temporal en *usuarios/model.py*
 ## 3.2 Poblar los Roles básicos (ADMIN y VENDEDOR)
 Para que los formularios y las listas desplegables funcionen correctamente, necesitamos que la tabla Rol tenga al menos los perfiles base exigidos por el proyecto.
 
-Iniciamos el servidor: `python manage.py runserver``
+Iniciamos el servidor: `python manage.py runserver` y ingresamos a http://127.0.0.1:8000/admin/ e inicia sesión con las credenciales del superusuario.
 
+Agregamos los Roles: ADMIN y VENDEDOR, además de borrar los roles "antiguos" (Admin, gerente y Operador). 
 
 ## 4. Formularios de Registro y Reasignación (usuarios/forms.py)
+Creamos el archivo `usuarios/forms.py`y define los dos formularios ajustados a los campos exactos de tu modelo (id_cargo, id_rol, persona y user).
+- `UserCreationForm`: Maneja automáticamente el cifrado y validación de la contraseña en auth_user, mientras nos permite solicitar los datos demográficos para Persona en una sola pantalla.   
+- `EditarEmpleadoForm`: Permite al Administrador reasignar cargos, departamentos y roles desde la plataforma web sin acceder a /admin/.
 
 ## 5. Vistas con Control de Acceso por Rol (usuarios/views.py)
+Modificamos `usuarios/views.py` y agregamos la lógica para listar, crear y editar registros según el rol.
+- **Decorador** `@login_required`: Protege las vistas para que solo usuarios autenticados ingresen.   
+- **Validación de rol en backend**: Si un usuario con rol VENDEDOR intenta forzar la URL /empleado/editar/1/, el servidor valida es_admin y cancela la acción devolviéndolo al dashboard.
 
 ## 6. Mapeo de Rutas (usuarios/urls.py)
+Actualiza `usuarios/urls.py` para enlazar estas vistas con las URLs accesibles por el navegador.
+- Define los identificadores (name='dashboard', name='crear_empleado') que se utilizan dentro de los botones de las plantillas HTML para navegar entre pantallas.
 
 ## 7. Plantilla del Panel de Trabajo (usuarios/templates/usuarios/dashboard.html)
 
