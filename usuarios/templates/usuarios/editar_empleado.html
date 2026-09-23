@@ -1,0 +1,41 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">Reasignar Empleado: {{ empleado.persona.nombres }} {{ empleado.persona.apellidos }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Cargo / Departamento</label>
+                        {{ form.id_cargo }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Rol Asignado</label>
+                        {{ form.id_rol }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Salario</label>
+                        {{ form.salario }}
+                    </div>
+                    <div class="form-check mb-4">
+                        {{ form.activo }}
+                        <label class="form-check-label fw-bold" for="{{ form.activo.id_for_label }}">
+                            Empleado Activo
+                        </label>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Actualizar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

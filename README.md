@@ -190,9 +190,33 @@ Modificamos `usuarios/views.py` y agregamos la lógica para listar, crear y edit
 - **Validación de rol en backend**: Si un usuario con rol VENDEDOR intenta forzar la URL /empleado/editar/1/, el servidor valida es_admin y cancela la acción devolviéndolo al dashboard.
 
 ## 6. Mapeo de Rutas (usuarios/urls.py)
-Actualiza `usuarios/urls.py` para enlazar estas vistas con las URLs accesibles por el navegador.
+Crea `usuarios/urls.py` para enlazar estas vistas con las URLs accesibles por el navegador.
 - Define los identificadores (name='dashboard', name='crear_empleado') que se utilizan dentro de los botones de las plantillas HTML para navegar entre pantallas.
 
 ## 7. Plantilla del Panel de Trabajo (usuarios/templates/usuarios/dashboard.html)
+Debes crear la estructura de carpetas dentro de la app usuarios:`usuarios/templates/usuarios/`
 
+### 7.1 Crear una plantilla base en usuarios/templates/usuarios/base.html
+Aca vive la plantilla común para todas las páginas, incluyendo a barra de navegación, estilos de Bootstrap 5 y la barra de mensajes flotantes (alertas del sistema)
 
+### 7.2 Inicio de Sesión (usuarios/templates/usuarios/login.html)
+Formulario de inicio de sesión centrado.
+
+### 7.3 Panel de Control (usuarios/templates/usuarios/dashboard.html)
+Muestra la lista general de personal. Oculta o despliega acciones de modificación y registro en función del rol del usuario conectado.
+
+### 7.4 Crear Empleado (usuarios/templates/usuarios/crear_empleado.html)
+Pantalla exclusiva del Administrador para registrar cuentas de usuario y sus datos laborales/personales.
+
+### 7.5 Editar Empleado (usuarios/templates/usuarios/editar_empleado.html)
+Permite reasignar roles, cargos y cambiar el estado activo/inactivo.
+
+## 8. Configuración global de redirecciones en settings.py
+Se modifica `config/settings.py` para controlar a dónde redirigir al usuario tras iniciar o cerrar sesión.
+
+# Comprobación
+1. Inicia el servidor: python manage.py runserver.
+2. Dirígete a [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/).
+3. Inicia sesión con una cuenta con rol ADMIN (puedes vincular tu superusuario a un registro de Empleado con Rol ADMIN desde el /admin/).
+4.Comprueba que como Administrador puedes visualizar la tabla, presionar el botón "+ Crear Nuevo Empleado" y editar registros existentes.
+5.Inicia sesión con un usuario con rol VENDEDOR: confirma que el botón de creación se oculta y la columna de acciones desaparece.

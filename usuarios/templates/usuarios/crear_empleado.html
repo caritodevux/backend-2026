@@ -1,0 +1,83 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Registrar Nuevo Empleado</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <h5 class="text-secondary border-bottom pb-2">1. Credenciales del Sistema</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre de Usuario</label>
+                            <input type="text" name="username" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" name="password1" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Confirmar Contraseña</label>
+                            <input type="password" name="password2" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <h5 class="text-secondary border-bottom pb-2 mt-3">2. Datos Personales</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">RUT</label>
+                            <input type="text" name="rut" class="form-control" placeholder="12345678-9" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Nombres</label>
+                            <input type="text" name="nombres" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Apellidos</label>
+                            <input type="text" name="apellidos" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" name="telefono" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" name="fecha_nacimiento" class="form-control">
+                        </div>
+                    </div>
+
+                    <h5 class="text-secondary border-bottom pb-2 mt-3">3. Asignación Laboral</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Cargo / Departamento</label>
+                            {{ form.id_cargo }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Rol Asignado</label>
+                            {{ form.id_rol }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Salario</label>
+                            <input type="number" step="0.01" name="salario" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Guardar Empleado</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
