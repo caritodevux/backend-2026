@@ -265,3 +265,55 @@ Se modifica `config/settings.py` para controlar a dónde redirigir al usuario tr
 ---
 
 # Pasos seguidos para el desarrollo de la segunda prueba.
+
+## Resumen requerimientos
+### Modelos requeridos
+- **Departamento**: nombre, descripcion.   
+- **Cargo**: nombre, descripcion.   
+- **Empleado**: rut, nombre, apellido, email, telefono, fecha_ingreso, cargo (FK a Cargo), departamento (FK a Departamento), estado (Activo/Inactivo).  
+### Administrador de Django
+- Registrar los tres modelos con permisos completos de CRUD.   
+- Personalizar la vista de Empleado con list_display, search_fields, list_filter y ordering.   
+### Control de acceso y sesión
+- Toda la sección de Administración de Personal debe estar protegida para usuarios autenticados (@login_required).   
+### Flujo de navegación e interfaces
+1. Home Principal (/home/ o /).   
+2. Gestión de Personal (/personal/).   
+3. CRUD de Empleados:Listado (/personal/empleados/)   
+- Registro/Crear (/personal/empleados/crear/)   
+- Detalle (/personal/empleados/<id>/)   
+- Modificar/Editar (/personal/empleados/<id>/editar/)   
+- Eliminar con pantalla de confirmación (/personal/empleados/<id>/eliminar/)
+
+# Avanzando sobre los construido para la evaluación 2
+## 0. Modelos y migraciones (usuarios/models.py)
+No necesitamos ajustar nada, porque el modelo actual es más completo que el requerimiento básico de la pauta:
+- **Datos de Empleado** (RUT, Nombre, Apellido, Email, Teléfono): Los maneja tu modelo Persona vinculado a Empleado.   
+- **Departamento y Cargo**: Tu modelo Cargo ya se relaciona con Departamento (id_departamento).   
+- **Fecha de Ingreso y Estado**: fecha_contratacion y activo (Activo / Inactivo).   
+- **Extras**: Conservamos salario_clp, Rol y la autenticación nativa User.
+
+## 1. Configuración de rutas en usuario/urls.py
+Actualizamos para que incorpore en modulo personal.
+
+## 2. Agregar vistas en usuarios/views.py
+Actualizamos y añadimos las vistas CRUD y la vista principal del módulo.
+
+## 3. Registrar y personalizar Django Admin en usuarios/admin.py
+Dado que en tu modelo los datos personales del empleado provienen de la relación Persona y el departamento proviene de Cargo, definiremos métodos helper dentro de EmpleadoAdmin para mostrar esta información de forma ordenada en las columnas del panel de administración. Se ordeno el código.
+
+### 3.1 Verificación en Django Admin
+- Iniciamos el servidor con `python manage.py runserver`.
+- Abrimos `http://127.0.0.1:8000/admin/` e ingresamos como el superusuario ADMIN.
+- Verificamos que en Departamentos, se vean las columnas: ID DEPARTAMENTO, NOMBRE, DESCRIPCIÓN, FECHA CREACIÓN. 
+- Probamos creando un departamento de prueba " Operaciones".
+- En el terminal aparece POST y en el Django Admin aparece el nuevo item.
+- Verificamos en CARGOS y revisamos si se puede seleccionar el departamento creado "Operaciones" al crear un nuevo Cargo (Operador).
+- Verificamos EMPLEADOS y revisamos que existan las siguientes columnas: RUT, NOMBRE COMPLETO, USUARIO, CARGO, DEPARTAMENTO y ACTIVO.
+- Probar el buscador con un rut
+- Confirmamos que en el panel derecho aparezcan los filtros por: Estado (activo o Inactivo), Departamento y Cargo.
+
+## 4. Crear e integrar templates de HTML en templates/usuarios
+- Creamos `gestion_personal.html`, que muestra la información del sistema y ofrece el CRUD de empleados.
+- Creamos `listar_empleado.html`, que muestra el listado de trabajadores registrado en el sistema, con botones de acciòn individual: Ver detalle, Editar, Eliminar.
+- Creamos `detalle_empleado.html`, que muestra la ficha tècnica y personal asociada al empleado seleccionado.

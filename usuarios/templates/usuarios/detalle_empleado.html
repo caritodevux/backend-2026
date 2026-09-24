@@ -1,0 +1,50 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Ficha del Empleado</h4>
+                    <span class="badge {% if empleado.activo %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                        {% if empleado.activo %}Activo{% else %}Inactivo{% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>RUT:</strong> {{ empleado.persona.rut|default:"N/A" }}</p>
+                            <p><strong>Nombres:</strong> {{ empleado.persona.nombres }}</p>
+                            <p><strong>Apellidos:</strong> {{ empleado.persona.apellidos }}</p>
+                            <p><strong>Email:</strong> {{ empleado.persona.email }}</p>
+                            <p><strong>Teléfono:</strong> {{ empleado.persona.telefono|default:"No registrado" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Usuario del Sistema:</strong> {{ empleado.user.username|default:"Sin usuario asignado" }}</p>
+                            <p><strong>Departamento:</strong> {{ empleado.id_cargo.id_departamento.nombre|default:"N/A" }}</p>
+                            <p><strong>Cargo:</strong> {{ empleado.id_cargo.nombre|default:"N/A" }}</p>
+                            <p><strong>Rol:</strong> {{ empleado.id_rol.nombre_rol|default:"N/A" }}</p>
+                            <p><strong>Salario:</strong> {{ empleado.salario_clp }}</p>
+                            <p><strong>Fecha Contratación:</strong> {{ empleado.fecha_contratacion|date:"d/m/Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver al Listado
+                    </a>
+                    <div>
+                        <a href="{% url 'editar_empleado' empleado.id_empleado %}" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Editar Informacion
+                        </a>
+                        <a href="{% url 'eliminar_empleado' empleado.id_empleado %}" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
