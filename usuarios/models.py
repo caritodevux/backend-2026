@@ -73,6 +73,8 @@ class Empleado(models.Model):
     # Le agregamos null=True, blank=True para que Django no exija un valor por defecto
     persona = models.OneToOneField(Persona, on_delete=models.CASCADE, related_name='empleado', null=True, blank=True)
     id_cargo = models.ForeignKey(Cargo, on_delete=models.SET_NULL, null=True, db_column='id_cargo', related_name='empleados')
+    # Campo que falta agregar en tu model:
+    id_rol = models.ForeignKey(Rol, on_delete=models.PROTECT, null=True, blank=True, db_column='id_rol', related_name='empleados')
     fecha_contratacion = models.DateField(auto_now_add=True)
     salario = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     activo = models.BooleanField(default=True)
@@ -80,4 +82,6 @@ class Empleado(models.Model):
     def __str__(self):
         # Usamos id_usuario e id_cargo porque así llamamos a los campos
         nombre_cargo = self.id_cargo.nombre if self.id_cargo else 'Sin cargo'
-        return f"Empleado: {self.id_usuario.username} | Cargo: {nombre_cargo}"
+        nombre_rol = self.id_rol.nombre_rol if self.id_rol else 'Sin rol'
+        username = self.user.username if self.user else 'Sin usuario'
+        return f"Empleado: {username} | Cargo: {nombre_cargo} | Rol: {nombre_rol}"

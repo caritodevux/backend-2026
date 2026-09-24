@@ -136,6 +136,10 @@ Comprobar que:
 ### 1. Adaptar usuarios/models.py para integrar la autenticación nativa
 Modificamos usuarios/models.py para conectar auth_user con Persona, Cargo, Rol y Empleado.
 
+> Al comprobar, sale un error: FieldError: Unknown field(s) (id_rol) specified for Empleado indica que la clase Empleado en tu archivo usuarios/models.py no tiene definido el campo id_rol. Cuando Django inicia y lee EditarEmpleadoForm en forms.py, intenta buscar id_rol dentro de Empleado. Al no encontrarlo en la definición del modelo, la aplicación detiene su ejecución.
+
+Actualizamos el modelo `Empleado` en. `usuarios/models.py`. Como modificamos el modelo, hay que realizar un `makemigrations` y `migrate`.
+
 ## 2. Actualizar usuarios/admin.py
 El problema con el *admin.py* original es que la clase EmpleadoAdmin aún hace referencia al campo id_usuario (que usábamos en el modelo antiguo) en lugar de user y persona (que definimos para el User nativo de Django).
 
@@ -193,6 +197,10 @@ Modificamos `usuarios/views.py` y agregamos la lógica para listar, crear y edit
 Crea `usuarios/urls.py` para enlazar estas vistas con las URLs accesibles por el navegador.
 - Define los identificadores (name='dashboard', name='crear_empleado') que se utilizan dentro de los botones de las plantillas HTML para navegar entre pantallas.
 
+>Durante la primera comprobaciòn salio error, porque el archivo principal de rutas del proyecto (config/urls.py) aún no tiene enlazado el archivo usuarios/urls.py que creamos. Por eso Django solo reconoce la ruta admin/. Para solucionarlo, se vinculo las rutas de la aplicación usuarios en el archivo principal del proyecto. Se Abrio el archivo `config/urls.py` y se reemplazo parte del código.
+
+>Además, Para hacer que la ruta raíz (/) cargue automáticamente la plataforma sin tener que escribir /login/ o /dashboard/ en la barra de direcciones, se ajusto el archivo usuarios/urls.py
+
 ## 7. Plantilla del Panel de Trabajo (usuarios/templates/usuarios/dashboard.html)
 Debes crear la estructura de carpetas dentro de la app usuarios:`usuarios/templates/usuarios/`
 
@@ -214,9 +222,11 @@ Permite reasignar roles, cargos y cambiar el estado activo/inactivo.
 ## 8. Configuración global de redirecciones en settings.py
 Se modifica `config/settings.py` para controlar a dónde redirigir al usuario tras iniciar o cerrar sesión.
 
-# Comprobación
+## 9. Comprobación
 1. Inicia el servidor: python manage.py runserver.
 2. Dirígete a [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/).
 3. Inicia sesión con una cuenta con rol ADMIN (puedes vincular tu superusuario a un registro de Empleado con Rol ADMIN desde el /admin/).
 4.Comprueba que como Administrador puedes visualizar la tabla, presionar el botón "+ Crear Nuevo Empleado" y editar registros existentes.
 5.Inicia sesión con un usuario con rol VENDEDOR: confirma que el botón de creación se oculta y la columna de acciones desaparece.
+
+# Pruebas de flujo y vcerificación de roles
