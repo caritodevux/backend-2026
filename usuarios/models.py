@@ -78,6 +78,13 @@ class Empleado(models.Model):
     fecha_contratacion = models.DateField(auto_now_add=True)
     salario = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     activo = models.BooleanField(default=True)
+    @property
+    def salario_clp(self):
+        if self.salario is not None:
+            # Formatea con puntos para separador de miles chileno
+            monto_entero = int(self.salario)
+            return f"${monto_entero:,}".replace(",", ".")
+        return "No asignado"
 
     def __str__(self):
         # Usamos id_usuario e id_cargo porque así llamamos a los campos

@@ -1,6 +1,30 @@
 {% extends 'usuarios/base.html' %}
 
 {% block content %}
+<!-- Tarjeta resumen del usuario autenticado -->
+<div class="card shadow-sm mb-4 border-start border-4 border-primary">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h5 class="card-title mb-1">
+                    Mi Perfil: <strong>{{ empleado_actual.persona.nombres }} {{ empleado_actual.persona.apellidos }}</strong>
+                </h5>
+                <p class="text-muted mb-0 small">
+                    RUT: <strong>{{ empleado_actual.persona.rut|default:"N/A" }}</strong> | 
+                    Correo: <strong>{{ user.email }}</strong> | 
+                    Teléfono: <strong>{{ empleado_actual.persona.telefono|default:"No registrado" }}</strong>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                <div class="badge bg-light text-dark p-2 border">
+                    <span class="text-muted d-block small">Mi Salario Base:</span>
+                    <strong class="fs-6 text-success">{{ empleado_actual.salario_clp }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Panel de Gestión de Empleados</h2>
     <div>

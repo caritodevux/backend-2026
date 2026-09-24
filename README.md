@@ -148,6 +148,8 @@ Se cambio:
 - *get_username*: Se actualizó *obj.id_usuario.username* a *obj.user.username*.
 - *admin_order_field*: Se actualizó a *user__username* para permitir ordenar por nombre de usuario en la tabla del panel de administración.
 
+>Para corregir un error al hacer las pruebas de flujo (antes del paso 3 de este proceso), se protegeran los métodos en usuarios/admin.py agregando una verificación de obj.user y si los cargos o departamentos son nulos.
+
 ## 3. Aplicar las migraciones a la base de datos
 Estos es para que se generen las tablas físicas que se vinsularan a la tabla nativa (auth_user):
 - usuarios_persona
@@ -229,4 +231,37 @@ Se modifica `config/settings.py` para controlar a dónde redirigir al usuario tr
 4.Comprueba que como Administrador puedes visualizar la tabla, presionar el botón "+ Crear Nuevo Empleado" y editar registros existentes.
 5.Inicia sesión con un usuario con rol VENDEDOR: confirma que el botón de creación se oculta y la columna de acciones desaparece.
 
-# Pruebas de flujo y vcerificación de roles
+# Pruebas de flujo y verificación de roles
+## Vincular el superusuario al rol ADMIN
+1. En el panel de administración http://127.0.0.1:8000/admin/, ir a Personas y añadir una persona con tus datos. (si no borraste la base de datos, deberias ver al menos 3 personas que ya habian sido creadas).
+2. En las secciones Departamentos y Cargos agrega al menos un registro de cada uno (si no borraste la base de datos, deberias ver estas secciones con elementos que ya habian sido creados)
+
+> Salto un error al intentar entrar a Empleados. Este error ocurre porque hay algún registro antiguo en la tabla Empleado cuya columna user está vacía (None).obj.user.username if obj.user else "Sin usuario" evita que la pantalla falle si el registro Empleado carece de usuario asignado.De igual forma, get_nombre_persona valida la existencia de obj.persona.
+
+3. Añadimos un `Empleado` en `Empleados` y selecciona la cuenta del superusuario, persona creada, id cargo e id rol de ADMIN.
+4. Volvemos a http://127.0.0.1:8000/ y redirige a login (si no estabas conectado anteriormente), si funciona correctamente debes verificar que:
+- Badge visible con el texto `ADMIN`.
+- Presencia del botón verde `+ Crear Nuevo Empleado`.
+- Columna Acciones Admin en la tabla con la opción de editar.
+5. Probamos creando desde ese dashboard un "Nuevo Empleado" y registramos un `vendedor1`, asignandole el rol de `vendedor`.
+
+> Ese código 200 en la petición POST /empleado/crear/ indica que el formulario no superó las validaciones de Django (form.is_valid() fue False). Actualizaremos el crear_empleado.html para mostrar errores
+
+6. Probamos entrar con la cuenta de `vendedor1` al login y comprobamos que aparezca la etiqueta de vendedor y no podemos ni crear empleado ni acciones de admin.
+
+## Probar la protección de seguridad en Backend
+1. Estando autenticado como `vendedor1`, intentamos ingresar a esta url: http://127.0.0.1:8000/empleado/crear/, aparece un mensaje "Acceso no autorizado: Solo Administradores pueden registrar empleados." y tampoco puede realizar ninguna modificación.
+
+## Probar la edición y reasignación como ADMIN
+1. Ingresamos con ADMIN. Buscamos a vendedor1 y apretamos el boton "reasignar/editar". Probamos cambianado algunos valores como 'Empleado activo'. 
+2. Guardamos los cambios y verificamos que los nuevos valores se reflejen en la tabla del dashboard.
+
+>Se agrega mensaje de error en el login modificando usuarios/templates/usuarios/login.html
+
+>Se cambia el formato del salario a clp en models.py
+
+>Se agrega una sección para consultar la información completa del usuario conectado, se agrega una tarjeta al dashboard.
+
+---
+
+# Pasos seguidos para el desarrollo de la segunda prueba.

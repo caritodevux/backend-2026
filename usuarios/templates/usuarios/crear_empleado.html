@@ -1,13 +1,28 @@
 {% extends 'usuarios/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-8">
         <div class="card shadow">
             <div class="card-header bg-success text-white">
                 <h4 class="mb-0">Registrar Nuevo Empleado</h4>
             </div>
             <div class="card-body">
+
+                <!-- Despliegue de errores generales del formulario -->
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Por favor corrige los siguientes errores:</strong>
+                        <ul class="mb-0 mt-2">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
                 <form method="post">
                     {% csrf_token %}
                     
@@ -15,15 +30,16 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nombre de Usuario</label>
-                            <input type="text" name="username" class="form-control" required>
+                            <input type="text" name="username" class="form-control" value="{{ form.username.value|default:'' }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Correo Electrónico</label>
-                            <input type="email" name="email" class="form-control" required>
+                            <input type="email" name="email" class="form-control" value="{{ form.email.value|default:'' }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Contraseña</label>
                             <input type="password" name="password1" class="form-control" required>
+                            <div class="form-text">Mínimo 8 caracteres, no debe ser totalmente numérica.</div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Confirmar Contraseña</label>
@@ -35,23 +51,23 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="form-label">RUT</label>
-                            <input type="text" name="rut" class="form-control" placeholder="12345678-9" required>
+                            <input type="text" name="rut" class="form-control" placeholder="12345678-9" value="{{ form.rut.value|default:'' }}" required>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Nombres</label>
-                            <input type="text" name="nombres" class="form-control" required>
+                            <input type="text" name="nombres" class="form-control" value="{{ form.nombres.value|default:'' }}" required>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Apellidos</label>
-                            <input type="text" name="apellidos" class="form-control" required>
+                            <input type="text" name="apellidos" class="form-control" value="{{ form.apellidos.value|default:'' }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Teléfono</label>
-                            <input type="text" name="telefono" class="form-control">
+                            <input type="text" name="telefono" class="form-control" value="{{ form.telefono.value|default:'' }}">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" name="fecha_nacimiento" class="form-control">
+                            <input type="date" name="fecha_nacimiento" class="form-control" value="{{ form.fecha_nacimiento.value|default:'' }}">
                         </div>
                     </div>
 
@@ -67,7 +83,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Salario</label>
-                            <input type="number" step="0.01" name="salario" class="form-control">
+                            <input type="number" step="0.01" name="salario" class="form-control" value="{{ form.salario.value|default:'' }}">
                         </div>
                     </div>
 

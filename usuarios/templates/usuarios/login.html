@@ -8,6 +8,13 @@
                 <h4 class="mb-0">Iniciar Sesión</h4>
             </div>
             <div class="card-body">
+                <!-- Alerta de error en credenciales -->
+                {% if form.errors %}
+                    <div class="alert alert-danger py-2 text-center" role="alert">
+                        <small>Usuario o contraseña incorrectos. Inténtalo de nuevo.</small>
+                    </div>
+                {% endif %}
+
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
