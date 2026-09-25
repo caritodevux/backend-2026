@@ -1,39 +1,87 @@
 {% extends 'usuarios/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-warning text-dark">
-                <h4 class="mb-0">Reasignar Empleado: {{ empleado.persona.nombres }} {{ empleado.persona.apellidos }}</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Cargo / Departamento</label>
-                        {{ form.id_cargo }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Rol Asignado</label>
-                        {{ form.id_rol }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Salario</label>
-                        {{ form.salario }}
-                    </div>
-                    <div class="form-check mb-4">
-                        {{ form.activo }}
-                        <label class="form-check-label fw-bold" for="{{ form.activo.id_for_label }}">
-                            Empleado Activo
-                        </label>
-                    </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-square"></i> Editar Ficha de Empleado
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
 
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
-                        <button type="submit" class="btn btn-primary">Actualizar Cambios</button>
-                    </div>
-                </form>
+                        <!-- Datos Personales -->
+                        <h5 class="text-primary mb-3 border-bottom pb-2">
+                            <i class="bi bi-person-vcard"></i> Datos Personales
+                        </h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.nombres.label }}</label>
+                                {{ form.nombres }}
+                                {% if form.nombres.errors %}<div class="text-danger small">{{ form.nombres.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.apellidos.label }}</label>
+                                {{ form.apellidos }}
+                                {% if form.apellidos.errors %}<div class="text-danger small">{{ form.apellidos.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">{{ form.telefono.label }}</label>
+                                {{ form.telefono }}
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-bold">{{ form.fecha_nacimiento.label }}</label>
+                                {{ form.fecha_nacimiento }}
+                            </div>
+                        </div>
+
+                        <!-- Datos Laborales -->
+                        <h5 class="text-primary mb-3 border-bottom pb-2 mt-4">
+                            <i class="bi bi-briefcase"></i> Asignación y Contrato
+                        </h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.id_cargo.label }}</label>
+                                {{ form.id_cargo }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.id_rol.label }}</label>
+                                {{ form.id_rol }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.salario.label }}</label>
+                                {{ form.salario }}
+                            </div>
+                            <div class="col-md-6 mb-3 d-flex align-items-center mt-3">
+                                <div class="form-check form-switch fs-5">
+                                    {{ form.activo }}
+                                    <label class="form-check-label ms-2 fs-6" for="{{ form.activo.id_for_label }}">
+                                        <strong>Estado Activo en Sistema</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-warning px-4 fw-bold">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

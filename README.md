@@ -362,7 +362,7 @@ ADMIN
 4. Editar los datos (/personal/empleados/<id>/editar/).
 5. Eliminar un usuario de prueba (/personal/empleados/<id>/eliminar/).
 
-## 6. Algunas modificaciones de UX
+## 6. Algunas modificaciones de UX/UI
 - Implementación de mostrar/ocultar contyraseña, modificando `crear_empleado.html` y `login.html`
 - Formato de salario a CLP en Editar Empleado, modificando `forms.py`
 - Filtros en el listado de empleados y busqueda, modificando `views.py` y `listar_ empleados`
@@ -370,3 +370,5 @@ ADMIN
 >Esto produjo un error VariableDoesNotExist ocurrió porque intentamos acceder a c.id_cargo dentro del bucle de cargos. En el modelo Cargo, la clave primaria suele llamarse id (o se accede genéricamente con .pk), mientras que id_cargo era el nombre de la relación FK dentro del modelo Empleado.
 
 - Se tomo en cuenta que el CRUD tambien debe modificar datos personales de los Empleados. Se actualizo `EditarEmpleadoForm` en `forms.py` para que capture y guarde automáticamente los cambios en el modelo Persona y en User, e incorporamos estos campos a la plantilla de edición.
+- Como recomendación de la IA, se actualizo el dahsboard para mostrar información más ejecutiva como KPIs de gestión de personas, usando el ORM de django (Sum y Avg). Se modifico `views.py` y `dashboard.html`
+- Como recomendación de la IA, el panel de Administración de Personal se mejoro para incorporar textos explicativos, que tenga consistencia visual con el resto del sistema, bread crumbs e indicadores de recuento. Se modifico `gestion_personal` en `views.py`

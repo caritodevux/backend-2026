@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Sum, Avg
 from .forms import CrearEmpleadoForm, EditarEmpleadoForm
-from .models import Empleado, Persona, Cargo, Departamento
+from .models import Empleado, Persona, Cargo, Departamento, Rol
 
 # Función auxiliar para validar rol ADMIN de forma limpia
 def es_administrador(user):
@@ -17,10 +17,48 @@ def dashboard(request):
     empleado_actual = getattr(request.user, 'empleado', None)
     es_admin = es_administrador(request.user)
 
-    return render(request, 'usuarios/dashboard.html', {
+    context = {
         'es_admin': es_admin,
         'empleado_actual': empleado_actual
-    })
+    }
+
+    # Si es admin, calculamos las métricas avanzadas para el Dashboard
+    if es_admin:
+        total_empleados = Empleado.objects.count()
+        activos = Empleado.objects.filter(activo=True).count()
+        inactivos = total_empleados - activos
+        
+        # Agregaciones salariales (solo de personal activo)
+        suma_salarios = Empleado.objects.filter(activo=True).aggregate(Sum('salario'))['salario__sum'] or 0
+        promedio_salario = Empleado.objects.filter(activo=True).aggregate(Avg('salario'))['salario__avg'] or 0
+
+        # % de operabilidad activa
+        porcentaje_activos = round((activos / total_empleados * 100), 1) if total_empleados > 0 else 0
+        
+        # Agregaciones salariales en CLP
+        suma_salarios = Empleado.objects.filter(activo=True).aggregate(Sum('salario'))['salario__sum'] or 0
+        promedio_salario = Empleado.objects.filter(activo=True).aggregate(Avg('salario'))['salario__avg'] or 0
+
+        # Últimos 5 empleados registrados en la BD
+        ultimos_empleados = Empleado.objects.select_related(
+            'persona', 'id_cargo__id_departamento', 'id_rol'
+        ).order_by('-id_empleado')[:5]
+
+        context.update({
+            'total_empleados': total_empleados,
+            'activos': activos,
+            'inactivos': inactivos,
+            'porcentaje_activos': porcentaje_activos,
+            'total_departamentos': Departamento.objects.count(),
+            'total_cargos': Cargo.objects.count(),
+            'total_roles': Rol.objects.count(),
+            # Formateamos los números a formato de miles CLP para la vista
+            'masa_salarial': f"{int(suma_salarios):,}".replace(",", "."),
+            'promedio_salarial': f"{int(promedio_salario):,}".replace(",", "."),
+            'ultimos_empleados': ultimos_empleados,
+        })
+
+    return render(request, 'usuarios/dashboard.html', context)
 
 
 # 2. Vista Principal de "Administración de Personal" (Exclusivo ADMIN)
@@ -31,17 +69,19 @@ def gestion_personal(request):
         return redirect('dashboard')
         
     empleado_actual = getattr(request.user, 'empleado', None)
-    total_empleados = Empleado.objects.count()
-    total_cargos = Cargo.objects.count()
-    total_departamentos = Departamento.objects.count()
     
-    return render(request, 'usuarios/gestion_personal.html', {
+    # Agrupamos todo en un diccionario "context" (es más limpio)
+    context = {
         'empleado_actual': empleado_actual,
         'es_admin': True,
-        'total_empleados': total_empleados,
-        'total_cargos': total_cargos,
-        'total_departamentos': total_departamentos,
-    })
+        'total_empleados': Empleado.objects.count(),
+        'empleados_activos': Empleado.objects.filter(activo=True).count(), # NUEVO
+        'total_cargos': Cargo.objects.count(),
+        'total_departamentos': Departamento.objects.count(),
+        'total_roles': Rol.objects.count(), # NUEVO
+    }
+    
+    return render(request, 'usuarios/gestion_personal.html', context)
 
 # 3. Listado General de Empleados (Exclusivo ADMIN)
 @login_required

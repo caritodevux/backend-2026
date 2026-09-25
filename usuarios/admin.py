@@ -26,7 +26,7 @@ class CargoAdmin(admin.ModelAdmin):
 
 @admin.register(Empleado)
 class EmpleadoAdmin(admin.ModelAdmin):
-    # Campos visibles en la lista exigidos por EVA2 (RUT, Nombre, Cargo, Depto, Estado)
+    # Campos visibles en la lista (RUT, Nombre, Cargo, Depto, Estado)
     list_display = ('id_empleado', 'get_rut', 'get_nombre_completo', 'get_username', 'id_cargo', 'get_departamento', 'activo')
     
     # Filtros por Estado (activo), Departamento y Cargo

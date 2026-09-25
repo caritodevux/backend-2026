@@ -1,53 +1,209 @@
 {% extends 'usuarios/base.html' %}
 
 {% block content %}
-<!-- Tarjeta resumen del usuario autenticado (Visible para todos) -->
-<div class="card shadow-sm mb-4 border-start border-4 border-primary">
-    <div class="card-body">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h5 class="card-title mb-1">
-                    Mi Perfil: <strong>{{ empleado_actual.persona.nombres }} {{ empleado_actual.persona.apellidos }}</strong>
-                </h5>
-                <p class="text-muted mb-0 small">
-                    RUT: <strong>{{ empleado_actual.persona.rut|default:"N/A" }}</strong> | 
-                    Correo: <strong>{{ user.email }}</strong> | 
-                    Teléfono: <strong>{{ empleado_actual.persona.telefono|default:"No registrado" }}</strong>
-                </p>
+<div class="container py-4">
+    <!-- Encabezado de Bienvenida -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                Bienvenido(a), {{ user.first_name|default:user.username }}
+            </h2>
+            <p class="text-muted mb-0">
+                {% if es_admin %}
+                    Panel de Control y Métricas Generales (Administrador)
+                {% else %}
+                    Resumen de Ficha Personal
+                {% endif %}
+            </p>
+        </div>
+        <div>
+            {% if es_admin %}
+                <span class="badge bg-danger fs-6 px-3 py-2"><i class="bi bi-shield-lock-fill"></i> ROL ADMIN</span>
+            {% else %}
+                <span class="badge bg-primary fs-6 px-3 py-2"><i class="bi bi-person-badge"></i> ROL EMPLEADO</span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if es_admin %}
+    <!-- Fila 1: Tarjetas de KPIs Principales -->
+    <div class="row g-3 mb-4">
+        <!-- Dotación de Personal -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="card-title mb-0 text-white-50">Dotación Total</h6>
+                        <i class="bi bi-people-fill fs-3"></i>
+                    </div>
+                    <h2 class="display-6 fw-bold mb-1">{{ total_empleados }}</h2>
+                    <div class="small">
+                        <span class="badge bg-light text-dark">{{ activos }} Activos</span>
+                        <span class="badge bg-warning text-dark">{{ inactivos }} Inactivos</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                <div class="badge bg-light text-dark p-2 border">
-                    <span class="text-muted d-block small">Mi Salario Base:</span>
-                    <strong class="fs-6 text-success">{{ empleado_actual.salario_clp }}</strong>
+        </div>
+
+        <!-- Masa Salarial Mensual -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="card-title mb-0 text-white-50">Masa Salarial Mensual</h6>
+                        <i class="bi bi-cash-stack fs-3"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">${{ masa_salarial }} CLP</h3>
+                    <p class="small text-white-50 mb-0">Presupuesto en personal activo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promedio Salarial -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-dark text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="card-title mb-0 text-white-50">Promedio Salarial</h6>
+                        <i class="bi bi-graph-up-arrow fs-3 text-warning"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">${{ promedio_salarial }} CLP</h3>
+                    <p class="small text-white-50 mb-0">Renta promedio contratada</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estructura Org. & Roles -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="card-title mb-0 text-white-50">Estructura & Paramétricas</h6>
+                        <i class="bi bi-diagram-3-fill fs-3"></i>
+                    </div>
+                    <h2 class="display-6 fw-bold mb-1">{{ total_departamentos }} <span class="fs-6 fw-normal">Deptos</span></h2>
+                    <p class="small mb-0">{{ total_cargos }} Cargos | {{ total_roles }} Roles de Seguridad</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Sección de Administración de Personal (Exclusiva para Administradores) -->
-{% if es_admin %}
-<div class="mt-5 border-top pt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h3 class="mb-1"><i class="bi bi-people-fill"></i> Administración de Personal</h3>
-            <p class="text-muted mb-0">Módulo de gestión de trabajadores, cargos y departamentos del sistema.</p>
+    <!-- Fila 2: Indicador de Estado Operativo + Acceso Rápido (Modificado) -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold text-muted mb-2"><i class="bi bi-activity text-danger me-2"></i>Salud Operativa del Personal</h6>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fs-4 fw-bold text-primary">{{ porcentaje_activos }}%</span>
+                        <span class="small text-muted">Contratos Activos</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ porcentaje_activos }}%;" aria-valuenow="{{ porcentaje_activos }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <p class="small text-muted mb-0">Muestra la proporción de empleados con contrato activo respecto al total registrado.</p>
+                </div>
+            </div>
         </div>
-        <span class="badge bg-danger fs-6">Acceso Admin</span>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                    <h6 class="fw-bold text-muted mb-3">
+                        <i class="bi bi-sliders text-primary me-2"></i>Panel de Administración Central
+                    </h6>
+                    <p class="small text-muted mb-4">Accede a todas las herramientas de creación, edición, búsqueda y detalle de empleados desde el panel de gestión.</p>
+                    <a href="{% url 'gestion_personal' %}" class="btn btn-primary px-4">
+                        <i class="bi bi-arrow-right-circle me-1"></i> Ir al Panel de Gestión
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Botones de acceso directo al módulo -->
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="{% url 'gestion_personal' %}" class="btn btn-primary">
-            Panel de Gestión
-        </a>
-        <a href="{% url 'listar_empleados' %}" class="btn btn-outline-primary">
-            Ver Listado de Empleados
-        </a>
-        <a href="{% url 'crear_empleado' %}" class="btn btn-success">
-            + Registrar Nuevo Empleado
-        </a>
+    <!-- Fila 3: Tabla de Últimos Registros (Modificada sin columna de acciones) -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-primary">
+                <i class="bi bi-clock-history me-2"></i>Últimas Incorporaciones Registradas
+            </h5>
+            <a href="{% url 'listar_empleados' %}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>RUT</th>
+                            <th>Nombre Completo</th>
+                            <th>Cargo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for emp in ultimos_empleados %}
+                        <tr>
+                            <td><strong>{{ emp.persona.rut|default:"N/A" }}</strong></td>
+                            <td>{{ emp.persona.nombres }} {{ emp.persona.apellidos }}</td>
+                            <td>{{ emp.id_cargo.nombre|default:"Sin cargo" }}</td>
+                            <td><span class="badge bg-secondary">{{ emp.id_rol.nombre_rol|default:"Sin rol" }}</span></td>
+                            <td>
+                                {% if emp.activo %}
+                                    <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactivo</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-3 text-muted">No hay empleados registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
+    {% else %}
+    <!-- Vista Simplificada para Usuario Estándar -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-person-vcard me-2"></i>Mi Ficha de Empleado</h5>
+                </div>
+                <div class="card-body p-4">
+                    {% if empleado_actual %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small">RUT</label>
+                            <p class="fw-bold mb-0">{{ empleado_actual.persona.rut|default:"No registrado" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Nombre Completo</label>
+                            <p class="fw-bold mb-0">{{ empleado_actual.persona.nombres }} {{ empleado_actual.persona.apellidos }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Departamento</label>
+                            <p class="fw-bold mb-0">{{ empleado_actual.id_cargo.id_departamento.nombre|default:"Sin asignar" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Cargo</label>
+                            <p class="fw-bold mb-0">{{ empleado_actual.id_cargo.nombre|default:"Sin asignar" }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> No se encontró una ficha de empleado asociada a tu cuenta de usuario. Contacta al administrador.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
-{% endif %}
 {% endblock %}
