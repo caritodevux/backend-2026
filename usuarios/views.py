@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 from .forms import CrearEmpleadoForm, EditarEmpleadoForm
 from .models import Empleado, Persona, Cargo, Departamento
 
@@ -42,7 +43,6 @@ def gestion_personal(request):
         'total_departamentos': total_departamentos,
     })
 
-
 # 3. Listado General de Empleados (Exclusivo ADMIN)
 @login_required
 def listar_empleados(request):
@@ -50,13 +50,39 @@ def listar_empleados(request):
         messages.error(request, "Acceso denegado: Se requieren permisos de Administrador.")
         return redirect('dashboard')
 
+    # Captura de parámetros desde el formulario GET
+    q = request.GET.get('q', '').strip()
+    cargo_id = request.GET.get('cargo', '')
+
+    # Convertir cargo_id a entero seguro
+    cargo_actual_int = int(cargo_id) if cargo_id.isdigit() else None
+
+    # Consulta base con relaciones optimizadas
     empleados = Empleado.objects.select_related('user', 'persona', 'id_cargo__id_departamento', 'id_rol').all()
+
+    # Filtro por texto (Nombre, Apellido, RUT o Username)
+    if q:
+        empleados = empleados.filter(
+            Q(persona__nombres__icontains=q) |
+            Q(persona__apellidos__icontains=q) |
+            Q(persona__rut__icontains=q) |
+            Q(user__username__icontains=q)
+        )
+
+    # Filtro por Cargo
+    if cargo_actual_int:
+        empleados = empleados.filter(id_cargo_id=cargo_actual_int)
+
+    cargos = Cargo.objects.all()
 
     return render(request, 'usuarios/listar_empleados.html', {
         'empleados': empleados,
+        'cargos': cargos,
+        'busqueda_actual': q,
+        'cargo_actual': cargo_id,
+        'cargo_actual_int': cargo_actual_int,
         'es_admin': True,
     })
-
 
 # 4. Vista de Detalle Individual (Exclusivo ADMIN)
 @login_required

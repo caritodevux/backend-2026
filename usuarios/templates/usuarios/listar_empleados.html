@@ -16,6 +16,47 @@
         </div>
     </div>
 
+    <!-- Barra de Búsqueda y Filtros -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-body bg-light rounded">
+            <form method="GET" action="{% url 'listar_empleados' %}" class="row g-2 align-items-center">
+                
+                <!-- Búsqueda por texto -->
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="text" name="q" value="{{ busqueda_actual }}" class="form-control" placeholder="Buscar por Nombre, RUT o Usuario...">
+                    </div>
+                </div>
+
+                <!-- Filtro por Cargo -->
+                <div class="col-md-4">
+                    <select name="cargo" class="form-select">
+                        <option value="">-- Todos los Cargos --</option>
+                        {% for c in cargos %}
+                            <option value="{{ c.pk }}" {% if cargo_actual_int == c.pk %}selected{% endif %}>
+                                {{ c.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel-fill me-1"></i> Filtrar
+                    </button>
+                    {% if busqueda_actual or cargo_actual %}
+                        <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary" title="Limpiar Filtros">
+                            <i class="bi bi-x-circle"></i> Limpiar
+                        </a>
+                    {% endif %}
+                </div>
+
+            </form>
+        </div>
+    </div>
+
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -67,7 +108,11 @@
                         {% empty %}
                         <tr>
                             <td colspan="7" class="text-center py-4 text-muted">
-                                No hay empleados registrados en la base de datos.
+                                {% if busqueda_actual or cargo_actual %}
+                                    No se encontraron empleados que coincidan con los criterios de búsqueda.
+                                {% else %}
+                                    No hay empleados registrados en la base de datos.
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}

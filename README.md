@@ -363,4 +363,10 @@ ADMIN
 5. Eliminar un usuario de prueba (/personal/empleados/<id>/eliminar/).
 
 ## 6. Algunas modificaciones de UX
-- Implementación de mostrar/ocultar contyraseña, modificando `crear_empleado.html`
+- Implementación de mostrar/ocultar contyraseña, modificando `crear_empleado.html` y `login.html`
+- Formato de salario a CLP en Editar Empleado, modificando `forms.py`
+- Filtros en el listado de empleados y busqueda, modificando `views.py` y `listar_ empleados`
+
+>Esto produjo un error VariableDoesNotExist ocurrió porque intentamos acceder a c.id_cargo dentro del bucle de cargos. En el modelo Cargo, la clave primaria suele llamarse id (o se accede genéricamente con .pk), mientras que id_cargo era el nombre de la relación FK dentro del modelo Empleado.
+
+- Se tomo en cuenta que el CRUD tambien debe modificar datos personales de los Empleados. Se actualizo `EditarEmpleadoForm` en `forms.py` para que capture y guarde automáticamente los cambios en el modelo Persona y en User, e incorporamos estos campos a la plantilla de edición.

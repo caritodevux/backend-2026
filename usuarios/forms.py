@@ -74,18 +74,31 @@ class CrearEmpleadoForm(UserCreationForm):
 
 
 class EditarEmpleadoForm(forms.ModelForm):
+    # Definimos salario con decimal_places=0 y step="1" para formatear a CLP
+    salario = forms.DecimalField(
+        max_digits=10,
+        decimal_places=0,
+        required=False,
+        label="Salario Base (CLP)",
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '1'})
+    )
+
     class Meta:
         model = Empleado
         fields = ['id_cargo', 'id_rol', 'salario', 'activo']
         labels = {
             'id_cargo': 'Cargo / Departamento',
             'id_rol': 'Rol Asignado',
-            'salario': 'Salario Base (CLP)',
             'activo': 'Estado Activo'
         }
         widgets = {
             'id_cargo': forms.Select(attrs={'class': 'form-select'}),
             'id_rol': forms.Select(attrs={'class': 'form-select'}),
-            'salario': forms.NumberInput(attrs={'class': 'form-control'}),
             'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Convierte el valor existente a entero para omitir el .00 al cargar el formulario
+        if self.instance and self.instance.salario is not None:
+            self.initial['salario'] = int(self.instance.salario)

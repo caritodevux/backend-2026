@@ -22,9 +22,31 @@
                         <input type="text" name="username" class="form-control" id="id_username" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id_password" class="form-label">Contraseña</label>
-                        <input type="password" name="password" class="form-control" id="id_password" required>
+                        <label for="id_password" class="form-label fw-bold">Contraseña</label>
+                        <div class="input-group">
+                            <input type="password" name="password" id="id_password" class="form-control" required>
+                            <button class="btn btn-outline-secondary" type="button" id="btnToggleLoginPass">
+                                <i class="bi bi-eye" id="iconLoginPass"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    <script>
+                        document.getElementById('btnToggleLoginPass')?.addEventListener('click', function () {
+                            const input = document.getElementById('id_password');
+                            const icon = document.getElementById('iconLoginPass');
+
+                            if (input.type === 'password') {
+                                input.type = 'text';
+                                icon.classList.remove('bi-eye');
+                                icon.classList.add('bi-eye-slash');
+                            } else {
+                                input.type = 'password';
+                                icon.classList.remove('bi-eye-slash');
+                                icon.classList.add('bi-eye');
+                            }
+                        });
+                    </script>
                     <button type="submit" class="btn btn-primary w-100">Ingresar</button>
                 </form>
             </div>
