@@ -37,7 +37,7 @@ class CrearEmpleadoForm(UserCreationForm):
     fecha_nacimiento = forms.DateField(
         required=False, 
         label="Fecha de Nacimiento",
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+        widget=forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'})
     )
     
     # Campos para la asignación laboral en Empleado
@@ -101,7 +101,7 @@ class EditarEmpleadoForm(forms.ModelForm):
     fecha_nacimiento = forms.DateField(
         required=False, 
         label="Fecha de Nacimiento",
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+        widget=forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'})
     )
 
     # Definimos salario con decimal_places=0 y step="1" para formatear a CLP

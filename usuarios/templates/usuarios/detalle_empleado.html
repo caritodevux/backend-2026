@@ -30,15 +30,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex justify-content-between">
-                    <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary">
+                <div class="card-footer d-flex flex-column flex-sm-row justify-content-between gap-2">
+                    <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary w-100 w-sm-auto">
                         <i class="bi bi-arrow-left"></i> Volver al Listado
                     </a>
-                    <div>
-                        <a href="{% url 'editar_empleado' empleado.id_empleado %}" class="btn btn-warning">
-                            <i class="bi bi-pencil"></i> Editar Informacion
+                    <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto">
+                        <a href="{% url 'editar_empleado' empleado.id_empleado %}" class="btn btn-warning w-100 w-sm-auto">
+                            <i class="bi bi-pencil"></i> Editar Información
                         </a>
-                        <a href="{% url 'eliminar_empleado' empleado.id_empleado %}" class="btn btn-danger">
+                        <a href="{% url 'eliminar_empleado' empleado.id_empleado %}" class="btn btn-danger w-100 w-sm-auto">
                             <i class="bi bi-trash"></i> Eliminar
                         </a>
                     </div>

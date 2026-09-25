@@ -2,11 +2,13 @@
 
 {% block content %}
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-person-lines-fill"></i> Listado de Empleados</h2>
-        <div>
+    
+    <!-- 1. HEADER Y BOTONES SUPERIORES (Adaptados a mobile) -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <h2 class="mb-0"><i class="bi bi-person-lines-fill"></i> Listado de Empleados</h2>
+        <div class="d-flex flex-wrap gap-2">
             {% if es_admin %}
-            <a href="{% url 'crear_empleado' %}" class="btn btn-success me-2">
+            <a href="{% url 'crear_empleado' %}" class="btn btn-success">
                 <i class="bi bi-person-plus"></i> Nuevo Empleado
             </a>
             {% endif %}
@@ -16,15 +18,17 @@
         </div>
     </div>
 
-    <!-- Barra de Búsqueda y Filtros -->
-    <div class="card mb-4 border-0 shadow-sm">
-        <div class="card-body bg-light rounded">
+    <!-- 2. BARRA DE BÚSQUEDA Y FILTROS (Corregido fondo blanco) -->
+    <div class="card mb-4 border-0 shadow-sm" style="background-color: var(--bg-card, #1e1e1e);">
+        <div class="card-body rounded">
             <form method="GET" action="{% url 'listar_empleados' %}" class="row g-2 align-items-center">
                 
                 <!-- Búsqueda por texto -->
                 <div class="col-md-5">
                     <div class="input-group">
-                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <span class="input-group-text border-secondary text-light" style="background-color: #121212;">
+                            <i class="bi bi-search"></i>
+                        </span>
                         <input type="text" name="q" value="{{ busqueda_actual }}" class="form-control" placeholder="Buscar por Nombre, RUT o Usuario...">
                     </div>
                 </div>
@@ -41,13 +45,13 @@
                     </select>
                 </div>
 
-                <!-- Botones de Acción -->
-                <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary w-100">
+                <!-- Botones de Acción Filtro -->
+                <div class="col-md-3 d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1">
                         <i class="bi bi-funnel-fill me-1"></i> Filtrar
                     </button>
                     {% if busqueda_actual or cargo_actual %}
-                        <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary" title="Limpiar Filtros">
+                        <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary flex-grow-1" title="Limpiar Filtros">
                             <i class="bi bi-x-circle"></i> Limpiar
                         </a>
                     {% endif %}
@@ -57,11 +61,13 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
+    <!-- 3. TABLA Y BOTONES DE ACCIÓN EN CADA FILA -->
+    <div class="card shadow-sm border-0" style="background-color: var(--bg-card, #1e1e1e);">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover table-striped align-middle mb-0">
-                    <thead class="table-dark">
+                <!-- Se agregó table-dark para respetar el modo oscuro -->
+                <table class="table table-dark table-hover table-striped align-middle mb-0">
+                    <thead>
                         <tr>
                             <th>RUT</th>
                             <th>Nombre Completo</th>
@@ -91,18 +97,21 @@
                                     <span class="badge bg-danger">Inactivo</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center">
-                                <a href="{% url 'detalle_empleado' emp.id_empleado %}" class="btn btn-sm btn-info text-white" title="Ver Detalle">
-                                    <i class="bi bi-eye"></i> Detalle
-                                </a>
-                                {% if es_admin %}
-                                <a href="{% url 'editar_empleado' emp.id_empleado %}" class="btn btn-sm btn-warning" title="Editar">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </a>
-                                <a href="{% url 'eliminar_empleado' emp.id_empleado %}" class="btn btn-sm btn-danger" title="Eliminar">
-                                    <i class="bi bi-trash"></i> Eliminar
-                                </a>
-                                {% endif %}
+                            <!-- AQUÍ ESTÁ LA CORRECCIÓN DE LOS BOTONES APILADOS -->
+                            <td>
+                                <div class="d-flex justify-content-center flex-wrap gap-2">
+                                    <a href="{% url 'detalle_empleado' emp.id_empleado %}" class="btn btn-sm btn-info text-white" title="Ver Detalle">
+                                        <i class="bi bi-eye"></i> Detalle
+                                    </a>
+                                    {% if es_admin %}
+                                    <a href="{% url 'editar_empleado' emp.id_empleado %}" class="btn btn-sm btn-warning text-dark" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <a href="{% url 'eliminar_empleado' emp.id_empleado %}" class="btn btn-sm btn-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </a>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         {% empty %}

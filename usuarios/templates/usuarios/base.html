@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +8,102 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons CDN (Agrega esta línea) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</head>
-<body class="bg-light">
+    <style>
+    :root {
+        /* Paleta de colores Dark Corporate */
+        --bg-main: #0a0a0a;         /* Fondo principal casi negro */
+        --bg-card: #1c1c1c;         /* Fondo de tarjetas */
+        --border-color: #333333;    /* Bordes sutiles */
+        --text-main: #f3f4f6;       /* Texto principal (blanco suave) */
+        --text-muted: #9ca3af;      /* Texto secundario */
+        --accent-color: #2563eb;    /* Azul corporativo */
+        --accent-hover: #1d4ed8;
+    }
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow">
+    body {
+        background-color: var(--bg-main) !important;
+        color: var(--text-main) !important;
+        font-family: 'Inter', -apple-system, sans-serif; /* Tipografía moderna */
+    }
+
+    /* Estilo premium para las tarjetas */
+    .card {
+        background-color: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-header {
+        background-color: transparent !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        font-weight: 600;
+    }
+
+    /* Estilo para la barra de navegación */
+    .navbar {
+        background-color: var(--bg-card) !important;
+        /* Cambiamos el color del borde por un blanco translúcido al 20% */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; 
+    }
+
+    /* Botones primarios corporativos */
+    .btn-primary {
+        background-color: var(--accent-color) !important;
+        border-color: var(--accent-color) !important;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--accent-hover) !important;
+        border-color: var(--accent-hover) !important;
+    }
+
+    /* Tablas modernas */
+    .table {
+        color: var(--text-main) !important;
+    }
+    .table-dark {
+        background-color: var(--bg-card) !important;
+    }
+    .table th {
+        background-color: #121212 !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        color: var(--text-muted);
+    }
+    .table td {
+        border-bottom: 1px solid var(--border-color) !important;
+        vertical-align: middle;
+    }
+    /* Estilos Premium para Inputs (Buscador y Formularios) */
+    .form-control, .form-select {
+        background-color: #121212 !important; /* Fondo casi negro */
+        color: var(--text-main) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 6px;
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted) !important;
+    }
+
+    /* Brillo azul al hacer clic en el buscador */
+    .form-control:focus, .form-select:focus {
+        background-color: #1a1a1a !important;
+        color: var(--text-main) !important;
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25) !important;
+    }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+    <nav class="navbar navbar-expand-lg mb-4 shadow">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">Gestión empresa</a>
+            <a class="navbar-brand fw-bold text-white" href="{% url 'dashboard' %}">Gestión empresa</a>
+            
             {% if user.is_authenticated %}
             <div class="d-flex align-items-center text-white">
                 <span class="me-3">

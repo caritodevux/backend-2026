@@ -1,0 +1,8 @@
+user: admin
+pwd: admin
+
+user: vendedor1
+pwd: Clave123
+
+user:vendedor2
+pwd: Clave123
