@@ -317,3 +317,50 @@ Dado que en tu modelo los datos personales del empleado provienen de la relació
 - Creamos `gestion_personal.html`, que muestra la información del sistema y ofrece el CRUD de empleados.
 - Creamos `listar_empleado.html`, que muestra el listado de trabajadores registrado en el sistema, con botones de acciòn individual: Ver detalle, Editar, Eliminar.
 - Creamos `detalle_empleado.html`, que muestra la ficha tècnica y personal asociada al empleado seleccionado.
+- Creamos `eliminar_empleado.html`, que es la pantalla de confirmación para eliminar.
+
+### 4.1 Revisando la navegación de la página
+```
+USUARIO
+│
+├── Login                      ---> /login/
+├── Dashboard                  ---> /dashboard/ (Vista general)
+└── Mi Perfil                  ---> (Tarjeta incorporada en Dashboard)
+
+ADMIN
+│
+├── Login                      ---> /login/
+├── Dashboard                  ---> /dashboard/ (Con botón de acceso al módulo)
+│
+└── Administración de Personal ---> /personal/ (Métricas + accesos)
+     │
+     ├── Listado Empleados     ---> /personal/empleados/
+     ├── Registrar Empleado    ---> /personal/empleados/crear/
+     ├── Detalle Empleado      ---> /personal/empleados/<id>/
+     ├── Editar Empleado       ---> /personal/empleados/<id>/editar/
+     └── Eliminar Empleado     ---> /personal/empleados/<id>/eliminar/
+```
+
+- Antes de continuar, fue evidente establecer un mapa de navegación que tuviera sentido con una jerarquia lógica, para que el usuario sepa en que sección se encuentra
+- Para cumplir con la seguridad, un usuario común jamás verá enlaces ni tablas de gestión de empleados. Si intenta ingresar escribiendo la URL manualmente (ej: /personal/empleados/), la vista en views.py lo bloqueará y lo enviará al Dashboard con un mensaje de error. 
+- Además, El usuario común ve su resumen básico en el Dashboard ("Mi Perfil"), mientras que la vista "Detalle Empleado" queda como una ficha técnica individual del módulo administrativo.
+- Esto significo modificar: `usuarios/views.py`, `usuarios/forms.py`, `templates/usuarios/crear_empleado.html` y `crear_empleado.html`.
+
+## 5. Pruebas según tipo de user
+### Pruebas con usuario normal (vendedor1)
+- logueamos con las credenciales de vendedor1
+- Aparece el dashboard con la card de información, no hay botoón de "Administración de personal"
+- Para la prueba de intrusión, ingresamos copiando en el navegado la dirección `http://127.0.0.1:8000/personal/`y `http://127.0.0.1:8000/personal/empleados/` y aparece el mensaje de "Acceso denegado: Se requieren permisos de Administrador. "
+
+### Pruebas con usuario admin (ADMIN)
+- Iniciamos sesión con la cuenta ADMIN
+- Verificamos que el dashboard aparacen los accesos directos al "Módulo personal"
+- Comprobamos que el CRUD funcione completo:
+1. Entrar al listado (/personal/empleados/).
+2. Crear un nuevo empleado (/personal/empleados/crear/).
+3. Ver la ficha de detalle (/personal/empleados/<id>/).
+4. Editar los datos (/personal/empleados/<id>/editar/).
+5. Eliminar un usuario de prueba (/personal/empleados/<id>/eliminar/).
+
+## 6. Algunas modificaciones de UX
+- Implementación de mostrar/ocultar contyraseña, modificando `crear_empleado.html`

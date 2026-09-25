@@ -1,97 +1,114 @@
 {% extends 'usuarios/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mb-5">
-    <div class="col-md-8">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Registrar Nuevo Empleado</h4>
-            </div>
-            <div class="card-body">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h4 class="mb-0 fs-5"><i class="bi bi-person-plus-fill me-2"></i> Registrar Nuevo Empleado</h4>
+                </div>
+                <div class="card-body p-4">
 
-                <!-- Despliegue de errores generales del formulario -->
-                {% if form.errors %}
-                    <div class="alert alert-danger">
-                        <strong>Por favor corrige los siguientes errores:</strong>
-                        <ul class="mb-0 mt-2">
-                            {% for field, errors in form.errors.items %}
-                                {% for error in errors %}
-                                    <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
+                    <!-- Mensajes de error globales del formulario -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Ocurrió un error en el formulario:</strong> Por favor revisa los campos señalados abajo.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <h5 class="text-secondary border-bottom pb-2">1. Credenciales del Sistema</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nombre de Usuario</label>
-                            <input type="text" name="username" class="form-control" value="{{ form.username.value|default:'' }}" required>
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- 1. Cuenta de Usuario -->
+                        <h5 class="text-primary mb-3 border-bottom pb-2">1. Credenciales de Usuario</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold">{{ form.username.label }}</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.password1.label }}</label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}<div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ form.password2.label }}</label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}<div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>{% endif %}
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Correo Electrónico</label>
-                            <input type="email" name="email" class="form-control" value="{{ form.email.value|default:'' }}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Contraseña</label>
-                            <input type="password" name="password1" class="form-control" required>
-                            <div class="form-text">Mínimo 8 caracteres, no debe ser totalmente numérica.</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Confirmar Contraseña</label>
-                            <input type="password" name="password2" class="form-control" required>
-                        </div>
-                    </div>
 
-                    <h5 class="text-secondary border-bottom pb-2 mt-3">2. Datos Personales</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">RUT</label>
-                            <input type="text" name="rut" class="form-control" placeholder="12345678-9" value="{{ form.rut.value|default:'' }}" required>
+                        <!-- 2. Información Personal -->
+                        <h5 class="text-primary mb-3 border-bottom pb-2">2. Información Personal</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.rut.label }}</label>
+                                {{ form.rut }}
+                                {% if form.rut.errors %}<div class="text-danger small mt-1">{{ form.rut.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.nombres.label }}</label>
+                                {{ form.nombres }}
+                                {% if form.nombres.errors %}<div class="text-danger small mt-1">{{ form.nombres.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.apellidos.label }}</label>
+                                {{ form.apellidos }}
+                                {% if form.apellidos.errors %}<div class="text-danger small mt-1">{{ form.apellidos.errors.0 }}</div>{% endif %}
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Nombres</label>
-                            <input type="text" name="nombres" class="form-control" value="{{ form.nombres.value|default:'' }}" required>
+                        <div class="row mb-3">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.telefono.label }}</label>
+                                {{ form.telefono }}
+                                {% if form.telefono.errors %}<div class="text-danger small mt-1">{{ form.telefono.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.fecha_nacimiento.label }}</label>
+                                {{ form.fecha_nacimiento }}
+                                {% if form.fecha_nacimiento.errors %}<div class="text-danger small mt-1">{{ form.fecha_nacimiento.errors.0 }}</div>{% endif %}
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Apellidos</label>
-                            <input type="text" name="apellidos" class="form-control" value="{{ form.apellidos.value|default:'' }}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Teléfono</label>
-                            <input type="text" name="telefono" class="form-control" value="{{ form.telefono.value|default:'' }}">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" name="fecha_nacimiento" class="form-control" value="{{ form.fecha_nacimiento.value|default:'' }}">
-                        </div>
-                    </div>
 
-                    <h5 class="text-secondary border-bottom pb-2 mt-3">3. Asignación Laboral</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Cargo / Departamento</label>
-                            {{ form.id_cargo }}
+                        <!-- 3. Datos Laborales -->
+                        <h5 class="text-primary mb-3 border-bottom pb-2">3. Asignación Laboral</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.id_cargo.label }}</label>
+                                {{ form.id_cargo }}
+                                {% if form.id_cargo.errors %}<div class="text-danger small mt-1">{{ form.id_cargo.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.id_rol.label }}</label>
+                                {{ form.id_rol }}
+                                {% if form.id_rol.errors %}<div class="text-danger small mt-1">{{ form.id_rol.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">{{ form.salario.label }}</label>
+                                {{ form.salario }}
+                                {% if form.salario.errors %}<div class="text-danger small mt-1">{{ form.salario.errors.0 }}</div>{% endif %}
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Rol Asignado</label>
-                            {{ form.id_rol }}
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Salario</label>
-                            <input type="number" step="0.01" name="salario" class="form-control" value="{{ form.salario.value|default:'' }}">
-                        </div>
-                    </div>
 
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
-                        <button type="submit" class="btn btn-success">Guardar Empleado</button>
-                    </div>
-                </form>
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <a href="{% url 'listar_empleados' %}" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success px-4">
+                                Registrar Empleado
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

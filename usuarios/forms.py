@@ -1,26 +1,77 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-# from .models import Empleado, Persona, Cargo, Rol
 from .models import Empleado, Cargo, Rol
 
 class CrearEmpleadoForm(UserCreationForm):
     # Campos para la tabla Persona
-    rut = forms.CharField(max_length=12, required=True, label="RUT (ej: 12345678-9)")
-    nombres = forms.CharField(max_length=100, required=True, label="Nombres")
-    apellidos = forms.CharField(max_length=100, required=True, label="Apellidos")
-    email = forms.EmailField(required=True, label="Correo Electrónico")
-    telefono = forms.CharField(max_length=20, required=False, label="Teléfono")
-    fecha_nacimiento = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}), label="Fecha de Nacimiento")
+    rut = forms.CharField(
+        max_length=12, 
+        required=True, 
+        label="RUT",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '12.345.678-9'})
+    )
+    nombres = forms.CharField(
+        max_length=100, 
+        required=True, 
+        label="Nombres",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    apellidos = forms.CharField(
+        max_length=100, 
+        required=True, 
+        label="Apellidos",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    email = forms.EmailField(
+        required=True, 
+        label="Correo Electrónico",
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    telefono = forms.CharField(
+        max_length=20, 
+        required=False, 
+        label="Teléfono",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    fecha_nacimiento = forms.DateField(
+        required=False, 
+        label="Fecha de Nacimiento",
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
     
     # Campos para la asignación laboral en Empleado
-    id_cargo = forms.ModelChoiceField(queryset=Cargo.objects.all(), required=False, label="Cargo / Departamento")
-    id_rol = forms.ModelChoiceField(queryset=Rol.objects.all(), required=True, label="Rol Asignado")
-    salario = forms.DecimalField(max_digits=10, decimal_places=2, required=False, label="Salario")
+    id_cargo = forms.ModelChoiceField(
+        queryset=Cargo.objects.all(), 
+        required=False, 
+        label="Cargo / Departamento",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    id_rol = forms.ModelChoiceField(
+        queryset=Rol.objects.all(), 
+        required=True, 
+        label="Rol Asignado",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    salario = forms.DecimalField(
+        max_digits=10, 
+        decimal_places=0, 
+        required=False, 
+        label="Salario Base (CLP)",
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 850000'})
+    )
 
     class Meta:
         model = User
         fields = ['username', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Aplicar clase CSS a los campos nativos de UserCreationForm (username, password1, password2)
+        for field_name, field in self.fields.items():
+            if 'class' not in field.widget.attrs:
+                field.widget.attrs['class'] = 'form-control'
+
 
 class EditarEmpleadoForm(forms.ModelForm):
     class Meta:
@@ -29,7 +80,7 @@ class EditarEmpleadoForm(forms.ModelForm):
         labels = {
             'id_cargo': 'Cargo / Departamento',
             'id_rol': 'Rol Asignado',
-            'salario': 'Salario',
+            'salario': 'Salario Base (CLP)',
             'activo': 'Estado Activo'
         }
         widgets = {
