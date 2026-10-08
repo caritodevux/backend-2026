@@ -375,3 +375,8 @@ ADMIN
 - La barra de navegación (.navbar) se mejoró en base.html para incorporar un borde inferior blanco translúcido (border-bottom) y corregir la jerarquía HTML, separando de forma clara el menú del fondo del sistema.
 - El listado de empleados en listar_empleados.html se mejoró para incorporar un tema oscuro unificado en la tabla y buscador, añadiendo contenedores flexibles (d-flex flex-wrap gap-2) e interactividad móvil mediante table-responsive para evitar el solapamiento de botones.
 - Los formularios en forms.py (CrearEmpleadoForm y EditarEmpleadoForm) se mejoraron para incorporar el parámetro format='%Y-%m-%d' en los widgets de fecha_nacimiento, garantizando que la fecha del empleado se cargue y previsualice correctamente en los campos de tipo fecha HTML5.
+
+# RETROALIMENTACIÓN DE LA EVALUACIÓN
+Muy buen trabajo. La solución demuestra un manejo sólido de Django, especialmente en ORM, autenticación, administración, control por roles e interfaz. Destaca el uso de una estructura normalizada mediante Persona, además de consultas optimizadas y una personalización avanzada de Django Admin.
+
+El principal aspecto a corregir respecto de la pauta es la relación con Departamento. Actualmente el empleado obtiene su departamento indirectamente a través del cargo, mientras que la evaluación solicita una relación explícita entre Empleado y Departamento. Por el mismo motivo, en el formulario de creación no es posible seleccionar Departamento directamente. Tampoco se ofrece el Estado en el registro inicial, ya que queda activo por defecto. Fuera de estos puntos, el CRUD y la integración general están muy bien resueltos
